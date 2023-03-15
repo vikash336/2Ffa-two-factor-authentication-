@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-h2k9(uey#3qp_b4)vjl5z6zoh2$cjfiz#rtv$029#ha$c&a4w=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["0.0.0.0"]
 
 
 # Application definition
@@ -63,7 +63,6 @@ DJOSER = {
     'ACTIVATION_URL': '#/activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
     'SERIALIZERS': {
-    
     'activation': 'djoser.serializers.ActivationSerializer',
     'password_reset': 'djoser.serializers.SendEmailResetSerializer',
     'password_reset_confirm': 'djoser.serializers.PasswordResetConfirmSerializer',
