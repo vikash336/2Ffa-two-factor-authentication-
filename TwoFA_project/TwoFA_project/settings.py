@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-h2k9(uey#3qp_b4)vjl5z6zoh2$cjfiz#rtv$029#ha$c&a4w=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["0.0.0.0"]
+ALLOWED_HOSTS = ["0.0.0.0","127.0.0.1"]
 
 
 # Application definition
@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'djoser',
     'app',
 ]
+
+AUTH_USER_MODEL = 'app.MyUser'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -121,8 +124,12 @@ WSGI_APPLICATION = 'TwoFA_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'two_fac',
+        'USER': 'postgres',
+        'PASSWORD': 'root',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
