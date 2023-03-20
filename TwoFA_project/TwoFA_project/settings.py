@@ -12,22 +12,27 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
-
+import os
+import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+env_file=os.path.join(BASE_DIR,".env")
+env=environ.Env()
+env.read_env(env_file)
+# print(env('DATABASE_URL'))
 
-
+# print(env.db())
+# print(env('SECRET_KEY'),'8888888888')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-h2k9(uey#3qp_b4)vjl5z6zoh2$cjfiz#rtv$029#ha$c&a4w='
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ["0.0.0.0","127.0.0.1"]
-
+SECRET_KEY = env('SECRET_KEY')
 
 # Application definition
 
@@ -43,7 +48,7 @@ INSTALLED_APPS = [
     'app',
 ]
 
-AUTH_USER_MODEL = 'app.MyUser'
+AUTH_USER_MODEL = 'app.UserAccount'
 
 
 REST_FRAMEWORK = {
@@ -122,17 +127,27 @@ WSGI_APPLICATION = 'TwoFA_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'two_fac',
-        'USER': 'postgres',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'two_fac',
+#         'USER': 'postgres',
+#         'PASSWORD': 'root',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
+PRODUCTION = env('PRODUCTION', cast=bool)
+
+if PRODUCTION:
+    DATABASES = {
+        'default': env.db()
+    }
+else:
+        DATABASES = {
+        'default': env.db()
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

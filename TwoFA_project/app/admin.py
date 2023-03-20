@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import MyUser, Two_fac
+from .models import UserAccount, TwoFaToken
 
 
-admin.site.register(MyUser)
-admin.site.register(Two_fac)
+admin.site.register(UserAccount)
+admin.site.register(TwoFaToken)

@@ -1,68 +1,48 @@
 from django.db import models
 
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, UserManager, AbstractUser
 
-class MyUserManager(BaseUserManager):
-    def create_user(self, email, password=None):
-        if not email:
-            raise ValueError('Users must have an email address')
+class UserAccountManager(UserManager):
+    def get_by_natural_key(self, username):
+        return self.get(
+            models.Q(**{self.model.USERNAME_FIELD: username})
+            | models.Q(**{self.model.EMAIL_FIELD: username}))
+    def create_user(self, email=None, password=None, **extra_fields):
+        return super().create_user(username=extra_fields.get('phone'),
+                                   email=email,
+                                   password=password,
+                                   **extra_fields)
 
-        user = self.model(
-            email=self.normalize_email(email),
-        )
+    def create_superuser(self, email=None, password=None, **extra_fields):
+        return super().create_superuser(username=extra_fields.get('phone'),
+                                        email=email,
+                                        password=password,
+                                        **extra_fields)
 
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, email, password=None):
-        user = self.create_user(
-            email,
-            password=password,
-        )
-        user.is_admin = True
-        user.save(using=self._db)
-        return user
-
-
-class MyUser(AbstractBaseUser):
-    email = models.EmailField(
-        verbose_name='email address',
-        max_length=255,
-        unique=True,
-    )
-    is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
-
-    objects = MyUserManager()
-
+class UserAccount(AbstractUser):
+    country=models.CharField(max_length=128,default="India")
+    phone=models.IntegerField(unique=True)
+    email=models.EmailField(unique=True)
+    is_staff=models.BooleanField(default=False)
+    # is_superuser=models.BooleanField(default=False)
+    is_active=models.BooleanField(default=True)
     USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS=[
+        'phone'
+    ]
 
-    class Meta:
-        verbose_name='User'
-        verbose_name_plural = 'Users'
+    objects = UserAccountManager()
 
     def __str__(self):
         return self.email
 
-    def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
-        # Simplest possible answer: Yes, always
-        return True
-
-    def has_module_perms(self, app_label):
-        "Does the user have permissions to view the app `app_label`?"
-        # Simplest possible answer: Yes, always
-        return True
-
-    @property
-    def is_staff(self):
-        return self.is_admin
+class TwoFaToken(models.Model):
+    user = models.ForeignKey(UserAccount,
+                             related_name='two_fa_tokens',
+                             on_delete=models.CASCADE)
+    token = models.CharField(max_length=15)
 
 
-class Two_fac(models.Model):
-    user=models.ForeignKey(MyUser, on_delete=models.CASCADE , related_name="MyUser")
-    otp=models.CharField(max_length=100)
 
-    def __str__(self):
-        return self.user
+    def __str__(self) -> str:
+        return f'{self.user.get_full_name()} {self.token}'
