@@ -3,9 +3,10 @@ from .models import UserAccount, TwoFaToken
 
 
 class Two_fac_serializer(serializers.Serializer):
+    user=serializers.CharField(max_length=100)
     class Meta:
         model=TwoFaToken
-        fields=('__all__')
+        fields=['user', 'Token']
 
 
 class MyUser_serializer(serializers.Serializer):

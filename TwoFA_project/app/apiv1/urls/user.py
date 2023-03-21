@@ -4,6 +4,6 @@ from ..views.user import send_otp
 
 
 urlpatterns = [
-    path('user/', send_otp.as_view()),
+    path('Login/', send_otp.as_view()),
 
 ]
