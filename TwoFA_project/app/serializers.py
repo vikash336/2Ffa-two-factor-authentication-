@@ -1,14 +1,15 @@
 from rest_framework import serializers
-from .models import MyUser , Two_fac
+from .models import UserAccount, TwoFaToken
 
 
 class Two_fac_serializer(serializers.Serializer):
+    user=serializers.CharField(max_length=100)
     class Meta:
-        model=Two_fac
-        fields=('__all__')
+        model=TwoFaToken
+        fields=['user', 'Token']
 
 
 class MyUser_serializer(serializers.Serializer):
     class Meta:
-        model=MyUser
+        model=UserAccount
         fields=('__all__')

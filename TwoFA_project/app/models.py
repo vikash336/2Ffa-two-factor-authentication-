@@ -44,5 +44,5 @@ class TwoFaToken(models.Model):
 
 
 
-    def __str__(self) -> str:
-        return f'{self.user.get_full_name()} {self.token}'
+    def __str__(self):
+        return f'{self.user}'
